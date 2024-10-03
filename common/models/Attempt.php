@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -27,6 +28,18 @@ class Attempt extends ActiveRecord
         return 'attempt';
     }
 
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'started_at',
+                'updatedAtAttribute' => null,
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,7 +47,7 @@ class Attempt extends ActiveRecord
     {
         return [
             [['url_id', 'http_code', 'started_at', 'finished_at'], 'integer'],
-            [['started_at', 'finished_at'], 'required'],
+            [['started_at'], 'required'],
             [['url_id'], 'exist', 'skipOnError' => true, 'targetClass' => Url::class, 'targetAttribute' => ['url_id' => 'id']],
         ];
     }

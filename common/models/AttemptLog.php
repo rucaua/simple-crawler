@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -23,6 +24,17 @@ class AttemptLog extends ActiveRecord
     public static function tableName(): string
     {
         return 'attempt_log';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => null,
+            ],
+        ];
     }
 
     /**
