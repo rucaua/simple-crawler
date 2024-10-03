@@ -1,8 +1,7 @@
 <?php
 
 return [
-    'bootstrap' => ['gii'],
+    'bootstrap' => [],
     'modules' => [
-        'gii' => 'yii\gii\Module',
     ],
 ];

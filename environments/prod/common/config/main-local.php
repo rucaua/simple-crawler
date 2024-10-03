@@ -8,10 +8,6 @@ return [
             'username' => 'yii2advanced',
             'password' => 'secret',
             'charset' => 'utf8',
-        ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@common/mail',
-        ],
+        ]
     ],
 ];
