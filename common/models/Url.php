@@ -49,7 +49,7 @@ class Url extends ActiveRecord
     {
         return [
             [['status', 'initiator', 'created_at', 'external_links', 'internal_links', 'images', 'words'], 'integer'],
-            [['created_at'], 'required'],
+            [['created_at'], 'safe'],
             [['url'], 'string', 'max' => 2048],
         ];
     }
