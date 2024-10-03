@@ -1,5 +1,6 @@
 <?php
 return [
+    'name' => 'Carmanah Signs: Code Challenge',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
