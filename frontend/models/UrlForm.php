@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use common\models\Url;
+use common\models\UrlStatus;
 use yii\base\Model;
 use yii\db\Exception;
 
@@ -29,11 +30,6 @@ class UrlForm extends Model
      */
     public function create(): bool
     {
-        if ($this->validate()) {
-            $model = new Url();
-            $model->url = $this->url;
-            return $model->save();
-        }
-        return false;
+        return $this->validate() && Url::createNew($this->url, 0);
     }
 }

@@ -2,20 +2,10 @@ version: '3.2'
 
 services:
 
-  frontend:
+  yii:
     build: frontend
     ports:
       - 31080:80
-    volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
-
-  backend:
-    build: backend
-    ports:
-      - 32080:80
     volumes:
       # Re-use local composer cache via host-volume
       - ~/.composer-docker/cache:/root/.composer/cache:delegated
