@@ -15,7 +15,7 @@ main > .container, main > .container-fluid
 }
 
 .not-set {
-    color: #c55;
+    color: #349aa4;
     font-style: italic;
 }
 
@@ -102,4 +102,8 @@ a.desc:after {
     text-decoration: none;
 }
 
-a {color: #2b9196;}
+a {color: #21787e;}
+a:visited {color: #0b555d;}
+a:hover {color: #54b3bb;}
+
+.pagination li {margin-right: 5px;}
