@@ -13,6 +13,7 @@ use yii\db\StaleObjectException;
  * @property int $id
  * @property int|null $url_id
  * @property int|null $http_code
+ * @property int|null $response_time response time in microseconds
  * @property int $started_at
  * @property int $finished_at
  *
@@ -35,7 +36,7 @@ class Attempt extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['url_id', 'http_code', 'started_at', 'finished_at'], 'integer'],
+            [['url_id', 'http_code', 'started_at', 'finished_at', 'response_time'], 'integer'],
             [['started_at'], 'required'],
             [
                 ['url_id'],
@@ -58,6 +59,7 @@ class Attempt extends ActiveRecord
             'http_code' => 'Http Code',
             'started_at' => 'Started At',
             'finished_at' => 'Finished At',
+            'response_time' => 'Response Time',
         ];
     }
 
@@ -84,15 +86,17 @@ class Attempt extends ActiveRecord
 
     /**
      * @param int $httpCode
+     * @param int $responseTime
      * @return bool
      * @throws StaleObjectException
      * @throws \Throwable
      */
-    public function finish(int $httpCode): bool
+    public function finish(int $httpCode, int $responseTime): bool
     {
         $this->finished_at = time();
         $this->http_code = $httpCode;
-        return $this->update(false, ['finished_at','http_code']);
+        $this->response_time = $responseTime;
+        return $this->update(false, ['finished_at', 'http_code', 'response_time']);
     }
 
     /**
@@ -104,7 +108,6 @@ class Attempt extends ActiveRecord
     {
         return $this->hasOne(Url::class, ['id' => 'url_id']);
     }
-
 
     /**
      * @param string $message

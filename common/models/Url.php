@@ -194,7 +194,8 @@ class Url extends ActiveRecord
     public function finishAttempt(CrawlerResultInterface $result): self
     {
         if ($this->currentAttempt->url_id === $this->id && $this->currentAttempt->finish(
-                $result->getHttpStatusCode()
+                $result->getHttpStatusCode(),
+                $result->getResponseTime()
             )) {
             if ($result->getHttpStatusCode() === 200) {
                 $this->status = UrlStatusEnum::CRAWLED->value;
@@ -272,5 +273,19 @@ class Url extends ActiveRecord
     public function setCurrentAttempt(Attempt $currentAttempt): void
     {
         $this->currentAttempt = $currentAttempt;
+    }
+
+
+    /**
+     * Human-readable response time for last attempt if exist or null
+     *
+     * @return string|null
+     */
+    public function getResponseTime(): ?string
+    {
+        if ($this->lastAttempt) {
+            return round($this->lastAttempt->response_time / 1000000, 2) . ' sec';
+        }
+        return null;
     }
 }

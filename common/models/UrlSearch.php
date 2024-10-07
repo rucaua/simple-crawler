@@ -16,6 +16,7 @@ class UrlSearch extends Url
     public int|string|null $createdBy = null;
     public int|string|null $createdBefore = null;
     public int|string|null $lastHttpCode = null;
+    public int|string|null $responseTime = null;
 
 
     /**
@@ -28,7 +29,7 @@ class UrlSearch extends Url
                 ['id', 'statusName', 'external_links', 'internal_links', 'images', 'words', 'lastHttpCode'],
                 'integer'
             ],
-            [['url', 'createdBy', 'createdBefore'], 'safe'],
+            [['url', 'createdBy', 'createdBefore', 'responseTime'], 'safe'],
         ];
     }
 
@@ -109,6 +110,15 @@ class UrlSearch extends Url
         }
 
 
+        if (!empty($this->responseTime)) {
+            if ($this->responseTime === 'slow') {
+                $query->andFilterWhere(['>', 'attempt.response_time', \Yii::$app->params['slowResponseEdge']]);
+            } else {
+                $query->andFilterWhere(['<=', 'attempt.response_time', \Yii::$app->params['slowResponseEdge']]);
+            }
+        }
+
+
         return $dataProvider;
     }
 
@@ -140,6 +150,12 @@ class UrlSearch extends Url
         $dataProvider->sort->attributes['lastHttpCode'] = [
             'asc' => ['attempt.http_code' => SORT_ASC],
             'desc' => ['attempt.http_code' => SORT_DESC],
+        ];
+
+        // custom sorting for response time
+        $dataProvider->sort->attributes['responseTime'] = [
+            'asc' => ['attempt.response_time' => SORT_ASC],
+            'desc' => ['attempt.response_time' => SORT_DESC],
         ];
 
         $dataProvider->sort->defaultOrder = ['id' => SORT_ASC];

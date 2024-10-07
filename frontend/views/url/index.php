@@ -81,6 +81,13 @@ $pjaxID = 'grid-pjax'
                 'attribute' => 'lastHttpCode',
                 'value' => 'lastAttempt.http_code',
             ],
+            [
+                'label' => 'Last Response Time',
+                'attribute' => 'responseTime',
+                'filterInputOptions' => ['prompt' => 'Any', 'class' => 'form-control'],
+                'filter' => ['slow' => 'Slow', 'normal' => 'Normal'],
+                'value' => 'responseTime'
+            ],
             'external_links',
             'internal_links',
             'images',

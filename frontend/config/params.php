@@ -1,4 +1,5 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
+    /* Slow Response Edge in microseconds; used for filters */
+    'slowResponseEdge' => 1000000,
 ];
