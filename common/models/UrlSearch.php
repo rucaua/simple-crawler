@@ -123,28 +123,26 @@ class UrlSearch extends Url
             'asc' => ['status' => SORT_ASC],
             'desc' => ['status' => SORT_DESC],
         ];
-        $dataProvider->sort->defaultOrder = ['statusName' => SORT_ASC];
 
         // custom sorting for createdBy
         $dataProvider->sort->attributes['createdBy'] = [
             'asc' => ['initiator' => SORT_ASC],
             'desc' => ['initiator' => SORT_DESC],
         ];
-        $dataProvider->sort->defaultOrder = ['initiator' => SORT_ASC];
 
         // custom sorting for createdBefore
         $dataProvider->sort->attributes['createdBefore'] = [
             'asc' => ['created_at' => SORT_ASC],
             'desc' => ['created_at' => SORT_DESC],
         ];
-        $dataProvider->sort->defaultOrder = ['createdBefore' => SORT_ASC];
 
         // custom sorting for lastHttpCode
         $dataProvider->sort->attributes['lastHttpCode'] = [
             'asc' => ['attempt.http_code' => SORT_ASC],
             'desc' => ['attempt.http_code' => SORT_DESC],
         ];
-        $dataProvider->sort->defaultOrder = ['lastHttpCode' => SORT_ASC];
+
+        $dataProvider->sort->defaultOrder = ['id' => SORT_ASC];
 
         return $dataProvider;
     }
