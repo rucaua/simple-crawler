@@ -283,9 +283,6 @@ class Url extends ActiveRecord
      */
     public function getResponseTime(): ?string
     {
-        if ($this->lastAttempt) {
-            return round($this->lastAttempt->response_time / 1000000, 2) . ' sec';
-        }
-        return null;
+        return $this->lastAttempt ? $this->lastAttempt->responseTimeInSeconds : null;
     }
 }

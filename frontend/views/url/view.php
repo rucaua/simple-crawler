@@ -1,11 +1,15 @@
 <?php
 
+use yii\data\ActiveDataProvider;
+use yii\grid\GridView;
+use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var common\models\Url $model */
+/** @var ActiveDataProvider $attemptDataProvider */
 
 $this->title = $model->url;
 $this->params['breadcrumbs'][] = ['label' => 'Urls', 'url' => ['index']];
@@ -41,4 +45,21 @@ YiiAsset::register($this);
         ],
     ]) ?>
 
+
+    <h2>Attempts:</h2>
+    <?= GridView::widget([
+        'dataProvider' => $attemptDataProvider,
+        'columns' => [
+            ['class' => SerialColumn::class],
+            /** Data columns starts @see \yii\grid\DataColumn */
+            'started_at:datetime',
+            'finished_at:datetime',
+            'http_code',
+            [
+                'attribute' => 'response_time',
+                'value' => 'responseTimeInSeconds'
+            ],
+            /** Data columns ends @see \yii\grid\DataColumn */
+        ],
+    ]); ?>
 </div>

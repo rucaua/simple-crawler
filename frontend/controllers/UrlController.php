@@ -2,10 +2,12 @@
 
 namespace frontend\controllers;
 
+use common\models\AttemptSearch;
 use common\models\Url;
 use common\models\UrlSearch;
 use frontend\models\UrlForm;
 use yii\bootstrap5\ActiveForm;
+use yii\data\ActiveDataProvider;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AjaxFilter;
@@ -87,8 +89,14 @@ class UrlController extends Controller
      */
     public function actionView($id)
     {
+
+        $model = $this->findModel($id);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $model->getAttempts(),
+        ]);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'attemptDataProvider' => $dataProvider
         ]);
     }
 

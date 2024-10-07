@@ -17,8 +17,9 @@ use yii\db\StaleObjectException;
  * @property int $started_at
  * @property int $finished_at
  *
- * @property AttemptLog[] $attemptLogs
- * @property Url $url
+ * @property-read  AttemptLog[] $attemptLogs
+ * @property-read  Url $url
+ * @property-read  string | null $responseTimeInSeconds
  */
 class Attempt extends ActiveRecord
 {
@@ -123,4 +124,16 @@ class Attempt extends ActiveRecord
             throw new Exception("AttemptLog not saved");
         }
     }
+
+
+    /**
+     * Human-readable response time or null
+     *
+     * @return string|null
+     */
+    public function getResponseTimeInSeconds(): ?string
+    {
+        return round($this->response_time / 1000000, 2) . ' sec';
+    }
 }
+
