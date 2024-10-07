@@ -15,6 +15,7 @@ class UrlSearch extends Url
     public int|string|null $statusName = null;
     public int|string|null $createdBy = null;
     public int|string|null $createdBefore = null;
+    public int|string|null $lastHttpCode = null;
 
 
     /**
@@ -24,7 +25,7 @@ class UrlSearch extends Url
     {
         return [
             [
-                ['id', 'statusName', 'external_links', 'internal_links', 'images', 'words'],
+                ['id', 'statusName', 'external_links', 'internal_links', 'images', 'words', 'lastHttpCode'],
                 'integer'
             ],
             [['url', 'createdBy', 'createdBefore'], 'safe'],
@@ -49,7 +50,7 @@ class UrlSearch extends Url
      */
     public function search(array $params): ActiveDataProvider
     {
-        $query = Url::find();
+        $query = Url::find()->joinWith('lastAttempt');
         $dataProvider = $this->createDataProvider($query);
 
         $this->load($params);
@@ -68,6 +69,7 @@ class UrlSearch extends Url
             'internal_links' => $this->internal_links,
             'images' => $this->images,
             'words' => $this->words,
+            'attempt.http_code' => $this->lastHttpCode,
         ]);
 
         $query->andFilterWhere(['like', 'url', $this->url]);
@@ -136,6 +138,14 @@ class UrlSearch extends Url
             'desc' => ['created_at' => SORT_DESC],
         ];
         $dataProvider->sort->defaultOrder = ['createdBefore' => SORT_ASC];
+
+        // custom sorting for lastHttpCode
+        $dataProvider->sort->attributes['lastHttpCode'] = [
+            'asc' => ['attempt.http_code' => SORT_ASC],
+            'desc' => ['attempt.http_code' => SORT_DESC],
+        ];
+        $dataProvider->sort->defaultOrder = ['lastHttpCode' => SORT_ASC];
+
         return $dataProvider;
     }
 }

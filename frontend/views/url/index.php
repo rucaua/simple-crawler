@@ -76,6 +76,11 @@ $pjaxID = 'grid-pjax'
                 'format' => ['datetime', 'short'],
                 'value' => 'created_at',
             ],
+            [
+                'label' => 'Last Http Code',
+                'attribute' => 'lastHttpCode',
+                'value' => 'lastAttempt.http_code',
+            ],
             'external_links',
             'internal_links',
             'images',

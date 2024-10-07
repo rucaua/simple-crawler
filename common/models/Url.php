@@ -31,6 +31,7 @@ use yii\db\StaleObjectException;
  * @property-read Attempt $currentAttempt
  * @property-read null | self $nextUrl
  * @property-read null | self $initiatorObject
+ * @property-read Attempt | null $lastAttempt
  */
 class Url extends ActiveRecord
 {
@@ -142,6 +143,17 @@ class Url extends ActiveRecord
     public function getAttempts(): ActiveQuery
     {
         return $this->hasMany(Attempt::class, ['url_id' => 'id']);
+    }
+
+
+    /**
+     * Gets query for the last [[Attempt]].
+     *
+     * @return ActiveQuery
+     */
+    public function getLastAttempt(): ActiveQuery
+    {
+        return $this->hasOne(Attempt::class, ['url_id' => 'id'])->orderBy('attempt.id');
     }
 
 
