@@ -43,8 +43,9 @@ class AttemptLog extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['attempt_id', 'created_at', 'log'], 'integer'],
-            [['created_at'], 'required'],
+            [['attempt_id', 'created_at'], 'integer'],
+            [['log'], 'string'],
+            [['created_at'], 'safe'],
             [['attempt_id'], 'exist', 'skipOnError' => true, 'targetClass' => Attempt::class, 'targetAttribute' => ['attempt_id' => 'id']],
         ];
     }
