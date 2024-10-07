@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use common\interfaces\CrawlerResultInterface;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;

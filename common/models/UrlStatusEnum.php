@@ -2,8 +2,13 @@
 
 namespace common\models;
 
-enum UrlStatus: int
+use common\helpers\EnumTrait;
+
+enum UrlStatusEnum: int
 {
+
+    use EnumTrait;
+
     case NEW = 10;
     case IN_PROGRESS = 20;
     case CRAWLED = 30;
@@ -19,6 +24,6 @@ enum UrlStatus: int
 
     public function getLabel(): string
     {
-        return self::labels[$this->value];
+        return self::labels[$this->value] ?? 'unknown';
     }
 }

@@ -3,7 +3,6 @@
 namespace common\models;
 
 use common\interfaces\CrawlerResultInterface;
-use frontend\models\UrlForm;
 use Yii;
 use yii\base\ErrorException;
 use yii\behaviors\TimestampBehavior;
@@ -15,7 +14,7 @@ use yii\db\StaleObjectException;
 /**
  * This is the model class for table "url".
  *
- * @property int $id
+ * @property-read int $id
  * @property string|null $url
  * @property int|null $status
  * @property int|null $initiator
@@ -25,13 +24,20 @@ use yii\db\StaleObjectException;
  * @property int|null $images
  * @property int|null $words
  *
- * @property Attempt[] $attempts
- * @property Attempt $currentAttempt
- * @property null | self $nextUrl
+ * @property-read string $initiatorName
+ * @property-read string $isInitiatorUrl
+ *
+ * @property-read Attempt[] $attempts
+ * @property-read Attempt $currentAttempt
+ * @property-read null | self $nextUrl
+ * @property-read null | self $initiatorObject
  */
 class Url extends ActiveRecord
 {
-    protected Attempt | null $currentAttempt = null;
+
+    const INITIATOR_UNKNOWN = 'unknown';
+
+    protected Attempt|null $currentAttempt = null;
 
     /**
      * {@inheritdoc}
@@ -59,7 +65,7 @@ class Url extends ActiveRecord
     {
         return [
             [['status', 'initiator', 'created_at', 'external_links', 'internal_links', 'images', 'words'], 'integer'],
-            ['status', 'in', 'range' => array_column(UrlStatus::cases(), 'value')],
+            ['status', 'in', 'range' => array_column(UrlStatusEnum::cases(), 'value')],
             ['created_at', 'safe'],
             ['url', 'string', 'max' => 2048],
             ['url', 'unique'],
@@ -84,6 +90,50 @@ class Url extends ActiveRecord
         ];
     }
 
+
+    /**
+     * @return string
+     */
+    public function getStatusName(): string
+    {
+        return UrlStatusEnum::tryFrom($this->status)?->getLabel();
+    }
+
+
+    /**
+     * List of possible statuses for self as dbvalue => label
+     *
+     * @return array array<int, string>
+     */
+    public static function getStatusList(): array
+    {
+        return UrlStatusEnum::array();
+    }
+
+
+    /**=
+     * @return string
+     * @throws \Exception
+     */
+    public function getInitiatorName(): string
+    {
+        return match ($this->initiator) {
+            0 => 'User',
+            null => self::INITIATOR_UNKNOWN,
+            default => $this->initiator,
+        };
+    }
+
+    /**
+     * true if this Url is created while crawling another one
+     *
+     * @return bool
+     */
+    public function getIsInitiatorUrl(): bool
+    {
+        return $this->initiator > 0;
+    }
+
     /**
      * Gets query for [[Attempts]].
      *
@@ -92,6 +142,17 @@ class Url extends ActiveRecord
     public function getAttempts(): ActiveQuery
     {
         return $this->hasMany(Attempt::class, ['url_id' => 'id']);
+    }
+
+
+    /**
+     * Gets query for [[Url]] during parsing of which this was created
+     *
+     * @return ActiveQuery
+     */
+    public function getInitiatorObject(): ActiveQuery
+    {
+        return $this->hasOne(self::class, ['id' => 'initiator']);
     }
 
 
@@ -120,9 +181,11 @@ class Url extends ActiveRecord
      */
     public function finishAttempt(CrawlerResultInterface $result): self
     {
-        if ($this->currentAttempt->url_id === $this->id && $this->currentAttempt->finish($result->getHttpStatusCode())) {
+        if ($this->currentAttempt->url_id === $this->id && $this->currentAttempt->finish(
+                $result->getHttpStatusCode()
+            )) {
             if ($result->getHttpStatusCode() === 200) {
-                $this->status = UrlStatus::CRAWLED->value;
+                $this->status = UrlStatusEnum::CRAWLED->value;
                 $this->external_links = $result->getExternalLinksCount();
                 $this->internal_links = count($result->getInternalLinks());
                 $this->images = $result->getImagesCount();
@@ -130,7 +193,7 @@ class Url extends ActiveRecord
                 $this->update(true, ['status', 'external_links', 'internal_links', 'images', 'words']);
                 $this->addInternalLinksToQueue($result->getInternalLinks());
             } elseif ($this->getAttempts()->count() >= Yii::$app->params['attemptLimit']) {
-                $this->status = UrlStatus::FAILED->value;
+                $this->status = UrlStatusEnum::FAILED->value;
                 $this->update(true, ['status']);
             }
             return $this;
@@ -145,8 +208,8 @@ class Url extends ActiveRecord
      */
     public function addInternalLinksToQueue(array $links): void
     {
-        foreach ($links as $link){
-            if(!$this->createNew($link, $this->id)){
+        foreach ($links as $link) {
+            if (!$this->createNew($link, $this->id)) {
                 $this->getCurrentAttempt()->log("Link $link can not be added");
             }
         }
@@ -164,7 +227,7 @@ class Url extends ActiveRecord
         $model = new Url;
         $model->url = $url;
         $model->initiator = $initiator;
-        $model->status = UrlStatus::NEW->value;
+        $model->status = UrlStatusEnum::NEW->value;
         return $model->save();
     }
 
@@ -175,7 +238,7 @@ class Url extends ActiveRecord
     public static function getNextUrl(): self|ActiveRecord|null
     {
         return self::find()
-            ->andWhere(['status' => [UrlStatus::NEW->value, UrlStatus::IN_PROGRESS->value]])
+            ->andWhere(['status' => [UrlStatusEnum::NEW->value, UrlStatusEnum::IN_PROGRESS->value]])
             ->orderBy([
                 'created_at' => SORT_ASC,
             ])->one();
@@ -188,7 +251,7 @@ class Url extends ActiveRecord
      */
     public function getCurrentAttempt(): Attempt
     {
-        if($this->currentAttempt !== null){
+        if ($this->currentAttempt !== null) {
             return $this->currentAttempt;
         }
         throw new ErrorException("currentAttempt is not set");

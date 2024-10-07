@@ -3,7 +3,7 @@
 namespace frontend\models;
 
 use common\models\Url;
-use common\models\UrlStatus;
+use common\models\UrlStatusEnum;
 use yii\base\Model;
 use yii\db\Exception;
 

@@ -2,8 +2,8 @@
 
 use common\models\Url;
 use frontend\models\UrlForm;
+use yii\grid\SerialColumn;
 use yii\helpers\Html;
-use yii\helpers\Url as UrlHelper;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -26,30 +26,63 @@ $pjaxID = 'grid-pjax'
     </p>
 
     <?php
-    Pjax::begin([
-        'id' => $pjaxID
-    ]); ?>
+    Pjax::begin(['id' => $pjaxID]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+            ['class' => SerialColumn::class],
+            /** Data columns starts @see \yii\grid\DataColumn */
             'id',
-            'url:url',
-            'status',
-            'initiator',
-            'created_at:datetime',
+            [
+                'attribute' => 'url',
+                'format' => 'raw',
+                'value' => function (Url $data) {
+                    return Html::a($data->url, $data->url, ['target' => '_blank', 'data-pjax' => 0]);
+                }
+            ],
+            [
+                'attribute' => 'statusName',
+                'filterInputOptions' => ['prompt' => 'Any', 'class' => 'form-control'],
+                'filter' => Url::getStatusList(),
+            ],
+            [
+                'attribute' => 'createdBy',
+                'label' => 'Created by',
+                'format' => 'raw',
+                'value' => function (Url $data) {
+                    if ($data->isInitiatorUrl) {
+                        return Html::a(
+                            $data->initiatorName,
+                            ['url/view', 'id' => $data->initiator],
+                            ['target' => '_blank', 'data-pjax' => 0]
+                        );
+                    } else {
+                        return $data->initiatorName;
+                    }
+                }
+            ],
+            [
+                'attribute' => 'createdBefore',
+                'filter' => [
+                    'today' => 'Today',
+                    'yesterday' => 'Yesterday',
+                    'thisWeek' => 'This Week',
+                    'thisMonth' => 'This Month',
+                    'thisYear' => 'This Year',
+                    'older' => 'Last Year And Older',
+                ],
+                'format' => ['datetime', 'short'],
+                'value' => 'created_at',
+            ],
             'external_links',
             'internal_links',
             'images',
             'words',
+            /** Data columns ends @see \yii\grid\DataColumn */
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Url $model, $key, $index, $column) {
-                    return UrlHelper::toRoute([$action, 'id' => $model->id]);
-                },
+                'class' => ActionColumn::class,
                 'template' => '{view} {delete}'
             ],
         ],
