@@ -103,10 +103,9 @@ a.desc:after {
 }
 
 a {color: #21787e;}
-a:visited {color: #0b555d;}
 a:hover {color: #54b3bb;}
 
 .pagination li {margin-right: 5px;}
 
-a.navbar-brand, a.navbar-brand:visited, .navbar-brand { color: #97c8cc; }
+a.navbar-brand, .navbar-brand { color: #97c8cc; }
 a.navbar-brand:hover { color: #fff; }
