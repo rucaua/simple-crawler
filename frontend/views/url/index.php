@@ -2,7 +2,6 @@
 
 use common\models\Url;
 use frontend\models\UrlForm;
-use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -13,7 +12,7 @@ use yii\widgets\Pjax;
 /** @var UrlForm $form */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Urls';
+$this->title = 'URLs';
 $this->params['breadcrumbs'][] = $this->title;
 $pjaxID = 'grid-pjax'
 ?>
@@ -32,7 +31,6 @@ $pjaxID = 'grid-pjax'
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => SerialColumn::class],
             /** Data columns starts @see \yii\grid\DataColumn */
             'id',
             [
@@ -44,6 +42,7 @@ $pjaxID = 'grid-pjax'
             ],
             [
                 'attribute' => 'statusName',
+                'label' => 'Status',
                 'filterInputOptions' => ['prompt' => 'Any', 'class' => 'form-control'],
                 'filter' => Url::getStatusList(),
             ],

@@ -11,15 +11,15 @@ use yii\widgets\Pjax;
 <div class="logs">
 
     <?php Pjax::begin([
-        'enablePushState' => false
+        'enablePushState' => false,
+        'timeout' => 10000
     ]) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
             ['class' => SerialColumn::class],
             /** Data columns starts @see \yii\grid\DataColumn */
-            'created_at',
-            'attempt_id',
+            'created_at:datetime',
             [
                     'attribute' => 'log',
                     'contentOptions' => [

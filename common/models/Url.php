@@ -80,7 +80,7 @@ class Url extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'url' => 'Url',
+            'url' => 'URL',
             'status' => 'Status',
             'initiator' => 'Initiator',
             'created_at' => 'Created At',
@@ -221,11 +221,20 @@ class Url extends ActiveRecord
      */
     public function addInternalLinksToQueue(array $links): void
     {
+        $skipped = 0;
         foreach ($links as $link) {
-            if (!$this->createNew($link, $this->id)) {
-                $this->getCurrentAttempt()->log("Link $link can not be added");
+            if(Url::find()->andWhere(['url' => $link])->exists()){
+                $skipped++;
+            }elseif($this->createNew($link, $this->id)){
+                $this->getCurrentAttempt()->log("Link processed successfully");
+            }else{
+                $this->getCurrentAttempt()->log("Link $link processing failed");
             }
         }
+        if($skipped > 0){
+            $this->getCurrentAttempt()->log("$skipped links was skipped because it already exists");
+        }
+
     }
 
 
