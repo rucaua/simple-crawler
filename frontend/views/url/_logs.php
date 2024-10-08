@@ -19,8 +19,7 @@ use yii\widgets\Pjax;
         'columns' => [
             ['class' => SerialColumn::class],
             /** Data columns starts @see \yii\grid\DataColumn */
-            'created_at',
-            'attempt_id',
+            'created_at:datetime',
             [
                     'attribute' => 'log',
                     'contentOptions' => [
