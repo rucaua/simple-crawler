@@ -1,7 +1,6 @@
 <?php
 
 use yii\caching\FileCache;
-use yii\debug\Module as DebugModule;
 
 
 return [
@@ -16,12 +15,8 @@ return [
             'class' => FileCache::class,
         ],
     ],
-    'bootstrap' => ['log', 'debug'],
-    'modules' => [
-        'debug' => [
-            'class' => DebugModule::class,
-            'allowedIPs' => ['*'],
-        ]
-    ]
+    'bootstrap' => [
+        'log',
+    ],
 ];
 
