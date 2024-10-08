@@ -2,7 +2,6 @@
 
 use common\models\Url;
 use frontend\models\UrlForm;
-use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -32,7 +31,6 @@ $pjaxID = 'grid-pjax'
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => SerialColumn::class],
             /** Data columns starts @see \yii\grid\DataColumn */
             'id',
             [
