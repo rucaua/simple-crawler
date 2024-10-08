@@ -1,7 +1,8 @@
-# Project Title
+# URL crawler
 
 ## Description
-Briefly describe what your project does.
+an application to store a list of URLs and retrieve information from
+those URLs using a backend process.
 
 ## Installation
 
