@@ -11,7 +11,8 @@ use yii\widgets\Pjax;
 <div class="logs">
 
     <?php Pjax::begin([
-        'enablePushState' => false
+        'enablePushState' => false,
+        'timeout' => 10000
     ]) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
