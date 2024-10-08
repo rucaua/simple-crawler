@@ -27,7 +27,7 @@ use yii\helpers\Url;
     <div class="row">
         <div class="col">
             <?= $form->field($model, 'url')->textInput(
-                ['maxlength' => true, 'placeholder' => 'Add url for crawling']
+                ['maxlength' => true, 'placeholder' => 'Add URL for crawling']
             )->label(false) ?>
         </div>
 
