@@ -13,7 +13,7 @@ use yii\widgets\Pjax;
 /** @var UrlForm $form */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Urls';
+$this->title = 'URLs';
 $this->params['breadcrumbs'][] = $this->title;
 $pjaxID = 'grid-pjax'
 ?>
@@ -44,6 +44,7 @@ $pjaxID = 'grid-pjax'
             ],
             [
                 'attribute' => 'statusName',
+                'label' => 'Status',
                 'filterInputOptions' => ['prompt' => 'Any', 'class' => 'form-control'],
                 'filter' => Url::getStatusList(),
             ],

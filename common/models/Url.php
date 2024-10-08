@@ -80,7 +80,7 @@ class Url extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'url' => 'Url',
+            'url' => 'URL',
             'status' => 'Status',
             'initiator' => 'Initiator',
             'created_at' => 'Created At',
