@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Attempt;
 use common\models\AttemptSearch;
 use common\models\Url;
 use common\models\UrlSearch;
@@ -38,7 +39,7 @@ class UrlController extends Controller
                 ],
                 'ajax' => [
                     'class' => AjaxFilter::class,
-                    'only' => ['create', 'validate'],
+                    'only' => ['create', 'validate','view-logs'],
                 ],
             ]
         );
@@ -87,16 +88,36 @@ class UrlController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id)
     {
-
-        $model = $this->findModel($id);
+        $model = $this->findUrlModel($id);
         $dataProvider = new ActiveDataProvider([
             'query' => $model->getAttempts(),
         ]);
         return $this->render('view', [
             'model' => $model,
             'attemptDataProvider' => $dataProvider
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionViewLogs(int $id)
+    {
+        $model = $this->findAttemptModel($id);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $model->getAttemptLogs(),
+            'pagination' => [
+                'pageSize' => 5,
+            ],
+        ]);
+
+        return $this->renderAjax('_logs', [
+            'form' => new UrlForm(),
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -122,7 +143,7 @@ class UrlController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findUrlModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -135,9 +156,26 @@ class UrlController extends Controller
      * @return Url the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findUrlModel(int $id): Url
     {
         if (($model = Url::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    /**
+     * Finds the Attempt model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return Attempt the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findAttemptModel(int $id): Attempt
+    {
+        if (($model = Attempt::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
